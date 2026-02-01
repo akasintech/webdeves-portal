@@ -1,0 +1,70 @@
+import type { Course, Class } from "../types"
+
+export const mockCourses: Course[] = [
+  {
+    id: "CRS001",
+    name: "Introduction to Web Development",
+    code: "WEB101",
+    description: "Learn the fundamentals of web development including HTML, CSS, and JavaScript",
+    instructorId: "INS001",
+    duration: "12 weeks",
+    startDate: "2024-01-15",
+    endDate: "2024-04-15",
+    schedule: "Mon, Wed, Fri - 10:00 AM - 12:00 PM",
+  },
+  {
+    id: "CRS002",
+    name: "Advanced React Development",
+    code: "WEB201",
+    description: "Master React and build modern web applications",
+    instructorId: "INS001",
+    duration: "10 weeks",
+    startDate: "2024-02-01",
+    endDate: "2024-04-15",
+    schedule: "Tue, Thu - 2:00 PM - 4:00 PM",
+  },
+  {
+    id: "CRS003",
+    name: "Cybersecurity Fundamentals",
+    code: "CYB101",
+    description: "Introduction to cybersecurity concepts and best practices",
+    instructorId: "INS002",
+    duration: "12 weeks",
+    startDate: "2024-01-15",
+    endDate: "2024-04-15",
+    schedule: "Mon, Wed - 3:00 PM - 5:00 PM",
+  },
+]
+
+export const mockClasses: Class[] = [
+  {
+    id: "CLS001",
+    courseId: "CRS001",
+    date: "2024-01-17",
+    time: "10:00 AM",
+    duration: 120,
+    type: "live",
+    meetingLink: "https://meet.webdeves.com/web101-jan17",
+    status: "scheduled",
+  },
+  {
+    id: "CLS002",
+    courseId: "CRS001",
+    date: "2024-01-19",
+    time: "10:00 AM",
+    duration: 120,
+    type: "live",
+    meetingLink: "https://meet.webdeves.com/web101-jan19",
+    status: "scheduled",
+  },
+  {
+    id: "CLS003",
+    courseId: "CRS002",
+    date: "2024-02-02",
+    time: "2:00 PM",
+    duration: 120,
+    type: "hybrid",
+    meetingLink: "https://meet.webdeves.com/web201-feb02",
+    status: "scheduled",
+  },
+]
