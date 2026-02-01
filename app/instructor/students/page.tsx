@@ -30,10 +30,10 @@ export default function StudentsPage() {
         const students = studentsArrays.flat()
 
         // Remove duplicates
-        const uniqueStudents = students.filter(
-          (student, index, self) => index === self.findIndex((s) => s.id === student.id),
-        )
-
+      const uniqueStudents = students.filter(
+       (student, index, self) => index === self.findIndex((s) => s?.id === student?.id),
+     )
+       
         setAllStudents(uniqueStudents)
         setFilteredStudents(uniqueStudents)
       } catch (error) {
