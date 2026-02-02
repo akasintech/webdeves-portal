@@ -10,7 +10,6 @@ import { VerifyEmailModal } from "./verify-email-modal"
 import { EmailSentModal } from "./email-sent-modal"
 import { ResetPasswordModal } from "./reset-password-modal"
 import { PasswordResetSuccessModal } from "./password-reset-success-modal"
-import LoginPage from "@/app/(auth)/login/page"
 
 type AuthView = "signup" | "login" | "forgot-password"
 

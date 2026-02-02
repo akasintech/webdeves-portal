@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { mockAuthApi } from "@/lib/mock-api"
 import { authUtils } from "@/lib/auth"
 import { Label } from "@/components/ui/label"
+import { Eye, EyeOff } from "lucide-react"
 
 interface LoginFormProps {
   onSignupClick: () => void
@@ -18,6 +19,7 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
    const router = useRouter()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,7 +27,7 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("[v0] Login submitted:", formData)
+    console.log("Login submitted:", formData)
 
     try {
           const { user, token } = await mockAuthApi.login(formData.email, formData.password)
@@ -63,6 +65,9 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+         {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
+        )}
         <div className="space-y-2">
           <Label htmlFor="email" className="text-[13px] font-medium text-gray-700">
             Email address
@@ -78,19 +83,26 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="password" className="text-[13px] font-medium text-gray-700">
             Password
           </Label>
           <Input
             id="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Enter password"
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
-            className="h-11 text-[15px]"
+            className="h-11 text-[15px] "
           />
+           <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
         </div>
 
         <div className="flex items-center justify-end">
@@ -103,12 +115,9 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
           </button>
         </div>
 
-        <Button
-          type="submit"
-          className="w-full h-12 bg-[#8b1c5c] hover:bg-[#751750] text-white text-[15px] font-medium"
-        >
-          Login
-        </Button>
+        <Button type="submit" className="w-full h-12 bg-[#8C2453] hover:bg-[#6B1A3E]" disabled={loading}>
+                 {loading ? "Logging in..." : "Login"}
+               </Button>
 
         <div className="text-center pt-2 md:hidden block">
           <p className="text-[14px] text-gray-600">
@@ -124,6 +133,9 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
               <div className="text-xs text-gray-700 space-y-1">
                 <p>
                   <strong>Student:</strong> john.doe@example.com / password123
+                </p>
+                <p>
+                  <strong>Parent:</strong> parent.doe@example.com / password123
                 </p>
                 <p>
                   <strong>Instructor:</strong> michael.johnson@webdeves.com / password123
