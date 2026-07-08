@@ -1,48 +1,14 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { BookOpen, CheckCircle2, ClipboardList, DollarSign, Clock, TrendingUp } from "lucide-react"
+import { mockStudentApi } from "@/lib/mock-api"
 
 const stats = [
   { label: "Total Courses", value: "3", icon: BookOpen, iconBg: "bg-blue-50", iconColor: "text-blue-400" },
   { label: "Attendance", value: "92%", icon: CheckCircle2, iconBg: "bg-green-50", iconColor: "text-green-400" },
   { label: "Assignments", value: "5", icon: ClipboardList, iconBg: "bg-orange-50", iconColor: "text-orange-400" },
   { label: "Fees Due", value: "$850", icon: DollarSign, iconBg: "bg-red-50", iconColor: "text-red-400" },
-]
-
-const upcomingClasses = [
-  { id: 1, name: "Web Development", time: "10:00 AM - 12:00 PM", tutor: "Prof. Smith" },
-  { id: 2, name: "Mobile App Development", time: "2:00 PM - 4:00 PM", tutor: "Prof. Johnson" },
-  { id: 3, name: "Database Design", time: "4:30 PM - 6:00 PM", tutor: "Prof. Williams" },
-]
-
-const courseProgress = [
-  { name: "Full Stack Web Development", progress: 75, completed: 30, total: 40 },
-  { name: "Mobile App Development", progress: 50, completed: 15, total: 30 },
-  { name: "Database Management", progress: 60, completed: 15, total: 25 },
-]
-
-const assignments = [
-  {
-    id: 1,
-    title: "React Project - E-commerce Site",
-    subject: "Web Development",
-    dueDate: "2026-04-15",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    title: "Database Schema Design",
-    subject: "Database Design",
-    dueDate: "2026-04-12",
-    status: "Overdue",
-  },
-  {
-    id: 3,
-    title: "Flutter App Development",
-    subject: "Mobile Dev",
-    dueDate: "2026-04-20",
-    status: "Submitted",
-  },
 ]
 
 const statusConfig: Record<string, { badge: string; btn: string | null }> = {
@@ -52,6 +18,40 @@ const statusConfig: Record<string, { badge: string; btn: string | null }> = {
 }
 
 export default function StudentDashboard() {
+  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([])
+  const [courseProgress, setCourseProgress] = useState<any[]>([])
+  const [assignments, setAssignments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        const [classesData, progressData, assignmentsData] = await Promise.all([
+          mockStudentApi.getZoomClasses(),
+          mockStudentApi.getCourseProgress(),
+          mockStudentApi.getAllAssignments()
+        ])
+        // Just slice assignments to show "recent"
+        setAssignments(assignmentsData.slice(0, 3))
+        setCourseProgress(progressData)
+        setUpcomingClasses(classesData)
+      } catch (error) {
+        console.error("Failed to load dashboard data", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadDashboard()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-5">
       {/* Welcome */}
@@ -86,7 +86,7 @@ export default function StudentDashboard() {
             {upcomingClasses.map((cls) => (
               <div key={cls.id} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
                 <div>
-                  <p className="text-[13.5px] font-bold text-gray-900">{cls.name}</p>
+                  <p className="text-[13.5px] font-bold text-gray-900">{cls.subject}</p>
                   <p className="text-[12px] text-blue-500 font-medium mt-0.5">{cls.time}</p>
                   <p className="text-[11.5px] text-gray-400 mt-0.5">Tutor: {cls.tutor}</p>
                 </div>
@@ -130,7 +130,7 @@ export default function StudentDashboard() {
         </h2>
         <div className="space-y-0 divide-y divide-gray-50">
           {assignments.map((a) => {
-            const cfg = statusConfig[a.status]
+            const cfg = statusConfig[a.status] || { badge: "", btn: null }
             return (
               <div key={a.id} className="flex items-center justify-between py-4">
                 <div>

@@ -1,44 +1,32 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Clock, User } from "lucide-react"
-
-const zoomClasses = [
-  {
-    id: 1,
-    type: "Scheduled & Exam Preparation",
-    subject: "React Advanced Patterns & Testing",
-    time: "10:00 AM - 12:00 PM",
-    tutor: "Prof. Smith",
-    link: "#",
-  },
-  {
-    id: 2,
-    type: "Study Material & Lesson",
-    subject: "Node.js & Express Framework",
-    time: "2:00 PM - 4:00 PM",
-    tutor: "Prof. Johnson",
-    link: "#",
-  },
-]
-
-const pendingAssignments = [
-  {
-    id: 1,
-    title: "MERN Stack E-commerce App",
-    category: "Final Project",
-    type: "Submission",
-    dueDate: "May 15, 2026",
-  },
-  {
-    id: 2,
-    title: "Create Online Weather App",
-    category: "API Integration",
-    type: "Assignment",
-    dueDate: "May 18, 2026",
-  },
-]
+import { mockStudentApi } from "@/lib/mock-api"
 
 export default function ZoomOnlineClassPage() {
+  const [zoomClasses, setZoomClasses] = useState<any[]>([])
+  const [pendingAssignments, setPendingAssignments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [classes, assignmentsData] = await Promise.all([
+          mockStudentApi.getZoomClasses(),
+          mockStudentApi.getAllAssignments()
+        ])
+        setZoomClasses(classes)
+        setPendingAssignments(assignmentsData.filter(a => a.status === "Pending").slice(0, 2))
+      } catch (error) {
+        console.error("Failed to load zoom page data", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
   return (
     <div className="space-y-6">
       <div>

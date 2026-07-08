@@ -1,44 +1,40 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Clock, User } from "lucide-react"
-
-const meetClasses = [
-  {
-    id: 1,
-    type: "Scheduled & Exam Preparation",
-    subject: "Database Design & Optimization",
-    time: "9:00 AM - 11:00 AM",
-    tutor: "Prof. Williams",
-    link: "#",
-  },
-  {
-    id: 2,
-    type: "Study Material & Lesson",
-    subject: "Cloud Computing Fundamentals",
-    time: "1:00 PM - 3:00 PM",
-    tutor: "Prof. Davis",
-    link: "#",
-  },
-]
-
-const pendingAssignments = [
-  {
-    id: 1,
-    title: "MERN Stack E-commerce App",
-    category: "Full Stack Project",
-    type: "Implementation",
-    dueDate: "May 14, 2026",
-  },
-  {
-    id: 2,
-    title: "Create Online Weather App",
-    category: "Third-party API",
-    type: "Integration",
-    dueDate: "May 17, 2026",
-  },
-]
+import { mockStudentApi } from "@/lib/mock-api"
 
 export default function GoogleMeetOnlineClassPage() {
+  const [meetClasses, setMeetClasses] = useState<any[]>([])
+  const [pendingAssignments, setPendingAssignments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [classes, assignmentsData] = await Promise.all([
+          mockStudentApi.getGoogleMeetClasses(),
+          mockStudentApi.getAllAssignments()
+        ])
+        setMeetClasses(classes)
+        setPendingAssignments(assignmentsData.filter(a => a.status === "Pending").slice(0, 2))
+      } catch (error) {
+        console.error("Failed to load google meet data", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div>

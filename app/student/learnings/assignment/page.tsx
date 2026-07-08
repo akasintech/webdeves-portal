@@ -1,68 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Calendar, Clock, User, Eye, Upload } from "lucide-react"
-
-const assignments = [
-  {
-    id: 1,
-    title: "Calculus Problem Set",
-    status: "Pending",
-    subject: "Mathematics",
-    class: "Class 1 - Section A",
-    description: "Complete exercises 1-10 from Chapter 5",
-    assignedDate: "2026-04-23",
-    dueDate: "2026-04-30",
-    maxMarks: 10,
-  },
-  {
-    id: 2,
-    title: "Lab Report - Chemical Reactions",
-    status: "Pending",
-    subject: "Science",
-    class: "Class 1 - Section A",
-    description: "Document the chemical reaction experiment conducted in class",
-    assignedDate: "2026-04-20",
-    dueDate: "2026-04-28",
-    maxMarks: 20,
-  },
-  {
-    id: 3,
-    title: "Build a React E-commerce App",
-    status: "Submitted",
-    subject: "Web Development",
-    class: "Class 1 - Section A",
-    description: "Create a fully functional e-commerce application using React",
-    assignedDate: "2026-04-15",
-    dueDate: "2026-04-27",
-    maxMarks: 10,
-  },
-  {
-    id: 4,
-    title: "Essay Writing",
-    status: "Overdue",
-    subject: "Hindi",
-    class: "Class 1 - Section A",
-    description: 'Write an essay on "Digital India" (500 words)',
-    assignedDate: "2026-04-18",
-    dueDate: "2026-04-25",
-    maxMarks: 25,
-  },
-  {
-    id: 5,
-    title: "Literature Analysis",
-    status: "Pending",
-    subject: "English",
-    class: "Class 1 - Section A",
-    description: "Analyze the themes in Shakespeare's Macbeth",
-    assignedDate: "2026-04-22",
-    dueDate: "2026-05-01",
-    maxMarks: 25,
-  },
-]
-
-const completedAssignments = assignments.filter((a) => a.status === "Submitted")
-const upcomingAssignments = assignments.filter((a) => a.status !== "Submitted")
+import { mockStudentApi } from "@/lib/mock-api"
 
 const statusStyles: Record<string, string> = {
   Pending: "bg-blue-50 text-blue-600 border border-blue-200",
@@ -72,7 +12,34 @@ const statusStyles: Record<string, string> = {
 
 export default function AssignmentPage() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "completed">("upcoming")
-  const displayed = activeTab === "upcoming" ? upcomingAssignments : completedAssignments
+  const [assignments, setAssignments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await mockStudentApi.getAllAssignments()
+        setAssignments(data)
+      } catch (error) {
+        console.error("Failed to load assignments", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  const displayed = assignments.filter((a) =>
+    activeTab === "upcoming" ? a.status !== "Submitted" : a.status === "Submitted"
+  )
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-5">

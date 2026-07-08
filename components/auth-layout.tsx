@@ -13,8 +13,12 @@ import { PasswordResetSuccessModal } from "./password-reset-success-modal"
 
 type AuthView = "signup" | "login" | "forgot-password"
 
-export function AuthLayout() {
-  const [currentView, setCurrentView] = useState<AuthView>("signup")
+interface AuthLayoutProps {
+  initialView?: AuthView
+}
+
+export function AuthLayout({ initialView = "signup" }: AuthLayoutProps) {
+  const [currentView, setCurrentView] = useState<AuthView>(initialView)
   const [showVerifyEmail, setShowVerifyEmail] = useState(false)
   const [showEmailSent, setShowEmailSent] = useState(false)
   const [showResetPassword, setShowResetPassword] = useState(false)

@@ -1,55 +1,8 @@
-import { BookOpen, FileText, Download } from "lucide-react"
+"use client"
 
-const lessonPlans = [
-  {
-    id: 1,
-    subject: "Full Stack Web Development",
-    week: "Week 1-4",
-    topic: "HTML, CSS & JavaScript Fundamentals",
-    instructor: "Prof. Smith",
-    status: "Completed",
-  },
-  {
-    id: 2,
-    subject: "Full Stack Web Development",
-    week: "Week 5-8",
-    topic: "React.js & State Management",
-    instructor: "Prof. Smith",
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    subject: "Full Stack Web Development",
-    week: "Week 9-12",
-    topic: "Node.js & Express Backend",
-    instructor: "Prof. Smith",
-    status: "Upcoming",
-  },
-  {
-    id: 4,
-    subject: "Mobile App Development",
-    week: "Week 1-4",
-    topic: "Dart & Flutter Basics",
-    instructor: "Prof. Johnson",
-    status: "Completed",
-  },
-  {
-    id: 5,
-    subject: "Mobile App Development",
-    week: "Week 5-8",
-    topic: "Flutter Widgets & Navigation",
-    instructor: "Prof. Johnson",
-    status: "In Progress",
-  },
-  {
-    id: 6,
-    subject: "Database Management",
-    week: "Week 1-4",
-    topic: "SQL & Relational Databases",
-    instructor: "Prof. Williams",
-    status: "Completed",
-  },
-]
+import { useState, useEffect } from "react"
+import { BookOpen, Download } from "lucide-react"
+import { mockStudentApi } from "@/lib/mock-api"
 
 const statusStyles: Record<string, string> = {
   Completed: "bg-green-50 text-green-700 border border-green-200",
@@ -58,6 +11,31 @@ const statusStyles: Record<string, string> = {
 }
 
 export default function LessonPlanPage() {
+  const [lessonPlans, setLessonPlans] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await mockStudentApi.getLessonPlans()
+        setLessonPlans(data)
+      } catch (error) {
+        console.error("Failed to load lesson plans", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-5">
       <div>

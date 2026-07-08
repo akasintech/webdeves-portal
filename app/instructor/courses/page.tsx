@@ -1,42 +1,38 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BookOpen, Users, Clock, Calendar, CheckCircle2, MoreVertical, Plus } from "lucide-react"
-
-const courses = [
-  {
-    id: 1,
-    name: "Full Stack Web Development",
-    code: "WEB-101",
-    students: 28,
-    duration: "12 Weeks",
-    progress: 75,
-    status: "Active",
-    schedule: "Mon, Wed 10:00 AM",
-  },
-  {
-    id: 2,
-    name: "Mobile App Development",
-    code: "MOB-201",
-    students: 22,
-    duration: "8 Weeks",
-    progress: 40,
-    status: "Active",
-    schedule: "Tue, Thu 2:00 PM",
-  },
-  {
-    id: 3,
-    name: "Database Design & Optimization",
-    code: "DB-301",
-    students: 25,
-    duration: "10 Weeks",
-    progress: 10,
-    status: "Active",
-    schedule: "Fri 9:00 AM",
-  },
-]
+import { mockInstructorApi } from "@/lib/mock-api"
+import { authUtils } from "@/lib/auth"
 
 export default function InstructorCoursesPage() {
+  const [courses, setCourses] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const user = authUtils.getUser()
+        if (user) {
+          const data = await mockInstructorApi.getCourses(user.id)
+          setCourses(data)
+        }
+      } catch (error) {
+        console.error("Failed to load instructor courses", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadCourses()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

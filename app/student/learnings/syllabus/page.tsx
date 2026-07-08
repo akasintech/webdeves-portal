@@ -1,45 +1,35 @@
-import { FileText, Download, ChevronRight } from "lucide-react"
+"use client"
 
-const syllabuses = [
-  {
-    id: 1,
-    subject: "Full Stack Web Development",
-    totalTopics: 24,
-    completedTopics: 14,
-    units: [
-      { name: "Unit 1: HTML & CSS", topics: 6, completed: 6 },
-      { name: "Unit 2: JavaScript", topics: 6, completed: 5 },
-      { name: "Unit 3: React.js", topics: 6, completed: 3 },
-      { name: "Unit 4: Node.js & Express", topics: 6, completed: 0 },
-    ],
-  },
-  {
-    id: 2,
-    subject: "Mobile App Development",
-    totalTopics: 20,
-    completedTopics: 10,
-    units: [
-      { name: "Unit 1: Dart Language", topics: 5, completed: 5 },
-      { name: "Unit 2: Flutter Basics", topics: 5, completed: 5 },
-      { name: "Unit 3: State Management", topics: 5, completed: 0 },
-      { name: "Unit 4: App Deployment", topics: 5, completed: 0 },
-    ],
-  },
-  {
-    id: 3,
-    subject: "Database Management",
-    totalTopics: 16,
-    completedTopics: 12,
-    units: [
-      { name: "Unit 1: SQL Basics", topics: 4, completed: 4 },
-      { name: "Unit 2: Advanced Queries", topics: 4, completed: 4 },
-      { name: "Unit 3: Database Design", topics: 4, completed: 4 },
-      { name: "Unit 4: NoSQL", topics: 4, completed: 0 },
-    ],
-  },
-]
+import { useState, useEffect } from "react"
+import { FileText, Download, ChevronRight } from "lucide-react"
+import { mockStudentApi } from "@/lib/mock-api"
 
 export default function SyllabusPage() {
+  const [syllabuses, setSyllabuses] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await mockStudentApi.getSyllabuses()
+        setSyllabuses(data)
+      } catch (error) {
+        console.error("Failed to load syllabuses", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-5">
       <div>
