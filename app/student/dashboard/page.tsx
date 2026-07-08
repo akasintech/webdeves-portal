@@ -1,173 +1,170 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { authUtils } from "@/lib/auth"
-import { mockStudentApi } from "@/lib/mock-api"
-import type { Student, Payment } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { CheckSquare, X } from "lucide-react"
+import { BookOpen, CheckCircle2, ClipboardList, DollarSign, Clock, TrendingUp } from "lucide-react"
+
+const stats = [
+  { label: "Total Courses", value: "3", icon: BookOpen, iconBg: "bg-blue-50", iconColor: "text-blue-400" },
+  { label: "Attendance", value: "92%", icon: CheckCircle2, iconBg: "bg-green-50", iconColor: "text-green-400" },
+  { label: "Assignments", value: "5", icon: ClipboardList, iconBg: "bg-orange-50", iconColor: "text-orange-400" },
+  { label: "Fees Due", value: "$850", icon: DollarSign, iconBg: "bg-red-50", iconColor: "text-red-400" },
+]
+
+const upcomingClasses = [
+  { id: 1, name: "Web Development", time: "10:00 AM - 12:00 PM", tutor: "Prof. Smith" },
+  { id: 2, name: "Mobile App Development", time: "2:00 PM - 4:00 PM", tutor: "Prof. Johnson" },
+  { id: 3, name: "Database Design", time: "4:30 PM - 6:00 PM", tutor: "Prof. Williams" },
+]
+
+const courseProgress = [
+  { name: "Full Stack Web Development", progress: 75, completed: 30, total: 40 },
+  { name: "Mobile App Development", progress: 50, completed: 15, total: 30 },
+  { name: "Database Management", progress: 60, completed: 15, total: 25 },
+]
+
+const assignments = [
+  {
+    id: 1,
+    title: "React Project - E-commerce Site",
+    subject: "Web Development",
+    dueDate: "2026-04-15",
+    status: "Pending",
+  },
+  {
+    id: 2,
+    title: "Database Schema Design",
+    subject: "Database Design",
+    dueDate: "2026-04-12",
+    status: "Overdue",
+  },
+  {
+    id: 3,
+    title: "Flutter App Development",
+    subject: "Mobile Dev",
+    dueDate: "2026-04-20",
+    status: "Submitted",
+  },
+]
+
+const statusConfig: Record<string, { badge: string; btn: string | null }> = {
+  Pending: { badge: "bg-gray-100 text-gray-600 border border-gray-200", btn: "bg-gray-900 text-white hover:bg-gray-700" },
+  Overdue: { badge: "bg-red-500 text-white", btn: "bg-red-500 text-white hover:bg-red-600" },
+  Submitted: { badge: "bg-green-500 text-white", btn: null },
+}
 
 export default function StudentDashboard() {
-  const [student, setStudent] = useState<Student | null>(null)
-  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([])
-  const [payments, setPayments] = useState<Payment[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showAttendanceAlert, setShowAttendanceAlert] = useState(true)
-
-  useEffect(() => {
-    const loadData = async () => {
-      const user = authUtils.getUser() as Student
-      if (!user) return
-
-      setStudent(user)
-
-      try {
-        const [classesData, paymentsData] = await Promise.all([
-          mockStudentApi.getUpcomingClasses(user.id),
-          mockStudentApi.getPayments(user.id),
-        ])
-
-        setUpcomingClasses(classesData)
-        setPayments(paymentsData)
-      } catch (error) {
-        console.error("[v0] Failed to load student data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
-  }, [])
-
-  const handleTakeAttendance = async () => {
-    // Mock attendance marking
-    await mockStudentApi.markAttendance("CLS001", student?.id || "")
-    setShowAttendanceAlert(false)
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
-  const paidAmount = payments.filter((p) => p.status === "paid").reduce((sum, p) => sum + p.amount, 0)
-  const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0)
-  const remainingAmount = totalAmount - paidAmount
-
   return (
-    <div className="space-y-6">
-      {/* Attendance Alert */}
-      {showAttendanceAlert && (
-        <Card className="border-none bg-gradient-to-r from-indigo-50 to-purple-50">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="flex-1">
-              <h3 className="font-semibold mb-1">Take your attendance!</h3>
-              <p className="text-sm text-gray-600">Click the button to take your attendance today</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={handleTakeAttendance} className="bg-indigo-600 hover:bg-indigo-700">
-                <CheckSquare className="w-4 h-4 mr-2" />
-                Take attendance
-              </Button>
-              <button onClick={() => setShowAttendanceAlert(false)} className="text-gray-400 hover:text-gray-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+    <div className="space-y-5">
+      {/* Welcome */}
+      <div>
+        <h1 className="text-[22px] font-bold text-gray-900">Welcome back, John!</h1>
+        <p className="text-[14px] text-gray-500 mt-0.5">Here's what's happening with your learning today.</p>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Upcoming Classes Card */}
-        <Card className="overflow-hidden">
-          <div className="aspect-video relative">
-            <img src="/images/banner.png" alt="Upcoming classes" className="w-full h-full object-cover" />
-          </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-2">Upcoming classes</h3>
-            {upcomingClasses.length === 0 ? (
-              <p className="text-sm text-gray-600">You do not have any upcoming classes yet.</p>
-            ) : (
-              <div className="space-y-2">
-                {upcomingClasses.slice(0, 2).map((cls) => (
-                  <div key={cls.id} className="text-sm">
-                    <p className="font-medium">{cls.course?.name}</p>
-                    <p className="text-gray-600">
-                      {cls.date} at {cls.time}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Course Outline Card */}
-        <Card className="overflow-hidden">
-          <div className="aspect-video relative bg-gradient-to-br from-blue-100 via-yellow-50 to-blue-50 flex items-center justify-center">
-            <div className="relative">
-              <div className="w-32 h-20 bg-gray-700 rounded-lg flex items-center justify-center">
-                <div className="w-0 h-0 border-l-[16px] border-l-transparent border-t-[24px] border-t-orange-500 border-r-[16px] border-r-transparent" />
-              </div>
-              <div className="absolute -right-4 -bottom-2">
-                <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M7 3v18l8-6H7z" />
-                </svg>
-              </div>
+      {/* Stats Row */}
+      <div className="grid grid-cols-4 gap-4">
+        {stats.map((stat) => (
+          <div key={stat.label} className="bg-white rounded-xl border border-gray-100 p-5 flex items-center justify-between">
+            <div>
+              <p className="text-[12px] text-gray-500 mb-1">{stat.label}</p>
+              <p className="text-[28px] font-bold text-gray-900">{stat.value}</p>
+            </div>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${stat.iconBg}`}>
+              <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
             </div>
           </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-2">Course outline</h3>
-            <p className="text-sm text-gray-600">Click to view your lesson outline & progress</p>
-          </CardContent>
-        </Card>
+        ))}
+      </div>
 
-        {/* Payment Summary Card */}
-        <Card className="overflow-hidden">
-          <div className="aspect-video relative bg-gradient-to-br from-pink-200 to-pink-100 flex items-center justify-center p-4">
-            <div className="relative w-full">
-              <div className="bg-white rounded-lg px-3 py-2 mb-2 text-center">
-                <p className="text-xs font-medium">PAY</p>
+      {/* Middle Row: Classes + Progress */}
+      <div className="grid grid-cols-2 gap-4">
+        {/* Upcoming Classes */}
+        <div className="bg-white rounded-xl border border-gray-100 p-5">
+          <h2 className="text-[14px] font-semibold text-gray-900 flex items-center gap-2 mb-4">
+            <Clock className="w-4 h-4" /> Upcoming Classes Today
+          </h2>
+          <div className="space-y-3">
+            {upcomingClasses.map((cls) => (
+              <div key={cls.id} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                <div>
+                  <p className="text-[13.5px] font-bold text-gray-900">{cls.name}</p>
+                  <p className="text-[12px] text-blue-500 font-medium mt-0.5">{cls.time}</p>
+                  <p className="text-[11.5px] text-gray-400 mt-0.5">Tutor: {cls.tutor}</p>
+                </div>
+                <button className="px-4 py-1.5 border border-gray-200 rounded-lg text-[12.5px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                  Join
+                </button>
               </div>
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-4 text-white">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="text-xs">
-                    <p className="font-mono">1234 5678 1234 5678</p>
-                    <p className="mt-1">my name</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Course Progress */}
+        <div className="bg-white rounded-xl border border-gray-100 p-5">
+          <h2 className="text-[14px] font-semibold text-gray-900 flex items-center gap-2 mb-4">
+            <BookOpen className="w-4 h-4" /> Course Progress
+          </h2>
+          <div className="space-y-5">
+            {courseProgress.map((course) => (
+              <div key={course.name}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-[13.5px] font-bold text-gray-900">{course.name}</p>
+                  <p className="text-[13px] font-semibold text-gray-900">{course.progress}%</p>
+                </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-1">
+                  <div
+                    className="h-full bg-gray-900 rounded-full transition-all"
+                    style={{ width: `${course.progress}%` }}
+                  />
+                </div>
+                <p className="text-[11.5px] text-gray-400">{course.completed} of {course.total} lessons completed</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Assignments */}
+      <div className="bg-white rounded-xl border border-gray-100 p-5">
+        <h2 className="text-[14px] font-semibold text-gray-900 flex items-center gap-2 mb-4">
+          <ClipboardList className="w-4 h-4" /> Recent Assignments
+        </h2>
+        <div className="space-y-0 divide-y divide-gray-50">
+          {assignments.map((a) => {
+            const cfg = statusConfig[a.status]
+            return (
+              <div key={a.id} className="flex items-center justify-between py-4">
+                <div>
+                  <p className="text-[13.5px] font-bold text-gray-900">{a.title}</p>
+                  <p className="text-[12px] text-gray-400 mt-0.5">{a.subject}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-[11.5px] text-gray-400 mb-1">Due: {a.dueDate}</p>
+                    {a.status === "Overdue" && (
+                      <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${cfg.badge}`}>
+                        Overdue
+                      </span>
+                    )}
+                    {a.status === "Pending" && (
+                      <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${cfg.badge}`}>
+                        Pending
+                      </span>
+                    )}
                   </div>
-                  <div className="flex gap-1">
-                    <div className="w-6 h-6 rounded-full bg-white/30" />
-                    <div className="w-6 h-6 rounded-full bg-white/30" />
-                  </div>
+                  {cfg.btn ? (
+                    <button className={`px-4 py-2 rounded-lg text-[12.5px] font-semibold transition-colors ${cfg.btn}`}>
+                      Submit
+                    </button>
+                  ) : (
+                    <span className="text-[12px] font-semibold px-4 py-2 rounded-lg bg-green-500 text-white">
+                      Submitted
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="absolute bottom-4 left-4 bg-white rounded p-2">
-                <div className="w-16 h-16 grid grid-cols-3 gap-1">
-                  {[...Array(9)].map((_, i) => (
-                    <div key={i} className="bg-black rounded-sm" />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-2">Payment summary</h3>
-            <div className="text-sm space-y-1">
-              <p>
-                <span className="text-gray-600">Paid:</span>{" "}
-                <span className="font-medium">₦{paidAmount.toLocaleString()}</span>
-              </p>
-              <p>
-                <span className="text-gray-600">Balance:</span>{" "}
-                <span className="font-medium text-red-600">₦{remainingAmount.toLocaleString()}</span>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

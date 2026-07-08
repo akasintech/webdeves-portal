@@ -1,150 +1,117 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { authUtils } from "@/lib/auth"
-import { mockInstructorApi } from "@/lib/mock-api"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react"
+import { BookOpen, Users, Clock, Calendar, CheckCircle2, MoreVertical, Plus } from "lucide-react"
 
-export default function CoursesPage() {
-  const [courses, setCourses] = useState<any[]>([])
-  const [selectedCourse, setSelectedCourse] = useState<any>(null)
-  const [students, setStudents] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+const courses = [
+  {
+    id: 1,
+    name: "Full Stack Web Development",
+    code: "WEB-101",
+    students: 28,
+    duration: "12 Weeks",
+    progress: 75,
+    status: "Active",
+    schedule: "Mon, Wed 10:00 AM",
+  },
+  {
+    id: 2,
+    name: "Mobile App Development",
+    code: "MOB-201",
+    students: 22,
+    duration: "8 Weeks",
+    progress: 40,
+    status: "Active",
+    schedule: "Tue, Thu 2:00 PM",
+  },
+  {
+    id: 3,
+    name: "Database Design & Optimization",
+    code: "DB-301",
+    students: 25,
+    duration: "10 Weeks",
+    progress: 10,
+    status: "Active",
+    schedule: "Fri 9:00 AM",
+  },
+]
 
-  useEffect(() => {
-    const loadCourses = async () => {
-      const user = authUtils.getUser()
-      if (!user) return
-
-      try {
-        const coursesData = await mockInstructorApi.getCourses(user.id)
-        setCourses(coursesData)
-        if (coursesData.length > 0) {
-          setSelectedCourse(coursesData[0])
-          const studentsData = await mockInstructorApi.getStudents(coursesData[0].id)
-          setStudents(studentsData)
-        }
-      } catch (error) {
-        console.error("[v0] Failed to load courses:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadCourses()
-  }, [])
-
-  const handleSelectCourse = async (course: any) => {
-    setSelectedCourse(course)
-    const studentsData = await mockInstructorApi.getStudents(course.id)
-    setStudents(studentsData)
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
+export default function InstructorCoursesPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">My Courses</h2>
-        <Button>Create New Course</Button>
+        <div>
+          <h1 className="text-[22px] font-bold text-gray-900">Learning (My Courses)</h1>
+          <p className="text-[14px] text-gray-500 mt-0.5">Manage your courses, curriculum, and students</p>
+        </div>
+        <button className="flex items-center gap-1.5 bg-gray-900 text-white text-[13px] font-bold px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors">
+          <Plus className="w-4 h-4" /> Create New Course
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Course List */}
-        <div className="space-y-4">
-          {courses.map((course) => (
-            <Card
-              key={course.id}
-              className={`cursor-pointer transition-all ${
-                selectedCourse?.id === course.id ? "ring-2 ring-primary" : ""
-              }`}
-              onClick={() => handleSelectCourse(course)}
-            >
-              <CardContent className="p-4">
-                <h3 className="font-semibold">{course.name}</h3>
-                <p className="text-sm text-gray-600">{course.code}</p>
-                <p className="text-xs text-gray-500 mt-2">{course.duration}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {courses.map((course) => (
+          <div key={course.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+            {/* Header / Cover */}
+            <div className="h-32 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-5 relative">
+              <span className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-md">
+                {course.status}
+              </span>
+              <div className="absolute bottom-4 left-5 right-5 text-white">
+                <p className="text-[12px] font-medium text-white/80 mb-0.5">{course.code}</p>
+                <h3 className="text-[16px] font-bold leading-tight">{course.name}</h3>
+              </div>
+            </div>
 
-        {/* Course Details */}
-        {selectedCourse && (
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>{selectedCourse.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="overview">
-                  <TabsList>
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="students">Students</TabsTrigger>
-                    <TabsTrigger value="assignments">Assignments</TabsTrigger>
-                  </TabsList>
+            {/* Content */}
+            <div className="p-5">
+              <div className="grid grid-cols-2 gap-4 mb-5">
+                <div>
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1 mb-1">
+                    <Users className="w-3 h-3" /> Enrolled
+                  </p>
+                  <p className="text-[14px] font-bold text-gray-900">{course.students} Students</p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1 mb-1">
+                    <Clock className="w-3 h-3" /> Duration
+                  </p>
+                  <p className="text-[14px] font-bold text-gray-900">{course.duration}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1 mb-1">
+                    <Calendar className="w-3 h-3" /> Schedule
+                  </p>
+                  <p className="text-[13.5px] font-medium text-gray-900">{course.schedule}</p>
+                </div>
+              </div>
 
-                  <TabsContent value="overview" className="space-y-4">
-                    <div>
-                      <h4 className="font-medium mb-2">Description</h4>
-                      <p className="text-gray-600">{selectedCourse.description}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-2">Schedule</h4>
-                      <p className="text-gray-600">{selectedCourse.schedule}</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-medium mb-2">Start Date</h4>
-                        <p className="text-gray-600">{selectedCourse.startDate}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium mb-2">End Date</h4>
-                        <p className="text-gray-600">{selectedCourse.endDate}</p>
-                      </div>
-                    </div>
-                  </TabsContent>
+              {/* Progress */}
+              <div className="mb-5">
+                <div className="flex items-center justify-between text-[11px] font-medium mb-1.5">
+                  <span className="text-gray-500">Course Completion</span>
+                  <span className="text-gray-900">{course.progress}%</span>
+                </div>
+                <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-blue-500 rounded-full"
+                    style={{ width: `${course.progress}%` }}
+                  />
+                </div>
+              </div>
 
-                  <TabsContent value="students" className="space-y-4">
-                    <div className="space-y-4">
-                      {students.map((student: any) => (
-                        <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-medium">
-                              {student.firstName[0]}
-                              {student.lastName[0]}
-                            </div>
-                            <div>
-                              <p className="font-medium">
-                                {student.firstName} {student.lastName}
-                              </p>
-                              <p className="text-sm text-gray-600">{student.email}</p>
-                            </div>
-                          </div>
-                          <Button size="sm" variant="outline">
-                            View Profile
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="assignments">
-                    <p className="text-center text-gray-600 py-8">No assignments yet</p>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
+              {/* Actions */}
+              <div className="flex items-center gap-2">
+                <button className="flex-1 bg-gray-50 text-gray-700 text-[12.5px] font-semibold py-2 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
+                  View Details
+                </button>
+                <button className="flex-1 bg-gray-900 text-white text-[12.5px] font-semibold py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                  Manage
+                </button>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   )

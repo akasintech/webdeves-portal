@@ -32,6 +32,7 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
     lastName: "",
     phoneNo: "",
     username: "",
+    role: "",
     password: "",
     dateOfBirth: "",
     gender: "",
@@ -151,6 +152,25 @@ export function SignupForm({ onSubmit, onLoginClick }: SignupFormProps) {
                 </SelectContent>
               </Select>
             </div>
+
+            <Select
+              value={formData.role}
+              onValueChange={(value) => setFormData({ ...formData, role: value })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select your role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Role</SelectLabel>
+                  <SelectItem value="student">Student</SelectItem>
+                  <SelectItem value="teacher">Teacher</SelectItem>
+                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="parent">Parent</SelectItem>
+                  <SelectItem value="instructor">Instructor</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
 
             <div className="relative">
               <Input

@@ -110,6 +110,43 @@ export const mockStudentApi = {
     await delay(300)
     return { success: true }
   },
+
+  // Learning methods
+  getZoomClasses: async () => {
+    await delay(300)
+    const { mockZoomClasses } = await import("./mock-data/learning")
+    return mockZoomClasses
+  },
+
+  getGoogleMeetClasses: async () => {
+    await delay(300)
+    const { mockMeetClasses } = await import("./mock-data/learning")
+    return mockMeetClasses
+  },
+
+  getAllAssignments: async () => {
+    await delay(300)
+    const { mockAssignments } = await import("./mock-data/learning")
+    return mockAssignments
+  },
+
+  getLessonPlans: async () => {
+    await delay(300)
+    const { mockLessonPlans } = await import("./mock-data/learning")
+    return mockLessonPlans
+  },
+
+  getSyllabuses: async () => {
+    await delay(300)
+    const { mockSyllabuses } = await import("./mock-data/learning")
+    return mockSyllabuses
+  },
+
+  getCourseProgress: async () => {
+    await delay(300)
+    const { mockCourseProgress } = await import("./mock-data/learning")
+    return mockCourseProgress
+  },
 }
 
 // Instructor APIs
