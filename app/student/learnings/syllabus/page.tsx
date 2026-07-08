@@ -61,7 +61,7 @@ export default function SyllabusPage() {
                 </div>
               </div>
               <div className="divide-y divide-gray-50">
-                {syl.units.map((unit) => {
+                {syl.units.map((unit: any) => {
                   const unitPct = Math.round((unit.completed / unit.topics) * 100)
                   return (
                     <div key={unit.name} className="px-5 py-3.5 flex items-center justify-between hover:bg-gray-50/50 transition-colors cursor-pointer">
