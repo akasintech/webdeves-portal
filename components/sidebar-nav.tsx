@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import {
   LayoutDashboard,
+  LayoutGrid,
   CreditCard,
   Users,
   GraduationCap,
@@ -17,6 +18,15 @@ import {
   ChevronDown,
   ChevronRight,
   Briefcase,
+  Building2,
+  Laptop,
+  GitFork,
+  Video,
+  TrendingUp,
+  TrendingDown,
+  CalendarCheck,
+  BookMarked,
+  MessageSquare,
 } from "lucide-react"
 import type { User } from "@/lib/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -24,7 +34,7 @@ import { useState } from "react"
 
 interface SidebarNavProps {
   user: User
-  role: "student" | "instructor" | "admin" | "parent"
+  role: "student" | "instructor" | "admin" | "parent" | "superadmin"
 }
 
 interface NavItem {
@@ -32,6 +42,7 @@ interface NavItem {
   icon: React.ElementType
   label: string
   children?: { href: string; label: string }[]
+  hasChevron?: boolean
 }
 
 export function SidebarNav({ user, role }: SidebarNavProps) {
@@ -40,6 +51,25 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
 
   const getNavItems = (): NavItem[] => {
     switch (role) {
+      case "superadmin":
+        return [
+          { href: "/superadmin/dashboard", icon: LayoutGrid, label: "Dashboard" },
+          { href: "/superadmin/front-office", icon: Building2, label: "Front Office", hasChevron: true },
+          { href: "/superadmin/student-info", icon: GraduationCap, label: "Student Info", hasChevron: true },
+          { href: "/superadmin/fee-collection", icon: CreditCard, label: "Fee Collection", hasChevron: true },
+          { href: "/superadmin/online-course", icon: Laptop, label: "Online Course", hasChevron: true },
+          { href: "/superadmin/multi-branch", icon: GitFork, label: "Multi Branch", hasChevron: true },
+          { href: "/superadmin/gmeet-live-class", icon: Video, label: "GMeet Live Class" },
+          { href: "/superadmin/zoom-live-class", icon: Video, label: "Zoom Live Class" },
+          { href: "/superadmin/income", icon: TrendingUp, label: "Income" },
+          { href: "/superadmin/expenses", icon: TrendingDown, label: "Expenses", hasChevron: true },
+          { href: "/superadmin/examination", icon: ClipboardList, label: "Examination", hasChevron: true },
+          { href: "/superadmin/attendance", icon: CalendarCheck, label: "Attendance", hasChevron: true },
+          { href: "/superadmin/academics", icon: BookOpen, label: "Academics", hasChevron: true },
+          { href: "/superadmin/lesson-plan", icon: BookMarked, label: "Lesson Plan", hasChevron: true },
+          { href: "/superadmin/human-resource", icon: Users, label: "Human Resource", hasChevron: true },
+          { href: "/superadmin/communication", icon: MessageSquare, label: "Communication", hasChevron: true },
+        ]
       case "student":
         return [
           { href: "/student/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -103,13 +133,13 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
     children.some((c) => pathname === c.href)
 
   return (
-    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200">
+    <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200 z-20">
       <div className="flex flex-col flex-1 overflow-y-auto">
         {/* Logo + Portal Label */}
         <div className="px-6 py-5 border-b border-gray-100">
           <Logo />
           <p className="text-[11px] text-gray-400 mt-1 capitalize">
-            {role === "instructor" ? "Tutor Portal" : `${role} Portal`}
+            {role === "instructor" ? "Tutor Portal" : role === "superadmin" ? "Superadmin Portal" : `${role} Portal`}
           </p>
         </div>
 
@@ -159,19 +189,32 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
             }
 
             // Regular link
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href || (item.href === "/superadmin/dashboard" && pathname === "/superadmin")
+            const isSuperAdmin = role === "superadmin"
+
+            const activeClass = isSuperAdmin
+              ? "bg-blue-50 text-blue-600 font-semibold"
+              : "bg-primary text-white"
+
+            const iconActiveClass = isSuperAdmin
+              ? (isActive ? "text-blue-600" : "text-slate-500")
+              : (isActive ? "text-white" : "text-gray-500")
+
             return (
               <Link
                 key={item.href}
                 href={item.href!}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors ${
                   isActive
-                    ? "bg-primary text-white"
+                    ? activeClass
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <item.icon className="w-4.5 h-4.5 flex-shrink-0" />
-                {item.label}
+                <item.icon className={`w-4.5 h-4.5 flex-shrink-0 ${iconActiveClass}`} />
+                <span className="flex-1">{item.label}</span>
+                {item.hasChevron && (
+                  <ChevronRight className={`w-3.5 h-3.5 ${isActive ? "text-blue-500" : "text-gray-400"}`} />
+                )}
               </Link>
             )
           })}

@@ -44,6 +44,9 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
             case "admin":
               router.push("/admin/dashboard")
               break
+            case "superadmin":
+              router.push("/superadmin/dashboard")
+              break
             case "parent":
               router.push("/parent/dashboard")
               break
@@ -142,6 +145,9 @@ export function LoginForm({ onSignupClick, onForgotPasswordClick }: LoginFormPro
                 </p>
                 <p>
                   <strong>Admin:</strong> admin@webdeves.com / password123
+                </p>
+                <p>
+                  <strong>Super Admin:</strong> superadmin@webdeves.com / password123
                 </p>
               </div>
             </div>

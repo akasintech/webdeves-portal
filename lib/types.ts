@@ -1,4 +1,4 @@
-export type UserRole = "student" | "instructor" | "admin" | "parent"
+export type UserRole = "student" | "instructor" | "admin" | "parent" | "superadmin"
 
 export interface User {
   id: string
@@ -33,10 +33,69 @@ export interface Admin extends User {
   permissions: string[]
 }
 
+export interface SuperAdmin extends User {
+  role: "superadmin"
+  adminId: string
+  permissions: string[]
+}
+
 export interface Parent extends User {
   role: "parent"
   parentId: string
   studentIds: string[]
+}
+
+export interface SuperAdminDashboardData {
+  stats: {
+    students: {
+      total: number
+      active: number
+      inactive: number
+    }
+    tutors: {
+      total: number
+      active: number
+    }
+    fees: {
+      totalPaid: number
+      studentsPaid: number
+      totalStudents: number
+      currency: string
+    }
+    debt: {
+      totalDebt: number
+      outstandingStudents: number
+      currency: string
+    }
+  }
+  metrics: {
+    feesAwaitingPayment: { current: number; total: number }
+    staffApprovedLeave: { current: number; total: number }
+    studentApprovedLeave: { current: number; total: number }
+    convertedLeads: { current: number; total: number }
+    staffPresentToday: { current: number; total: number }
+    studentPresentToday: { current: number; total: number }
+  }
+  feesOverview: {
+    label: string
+    count: number
+    percentage: number
+  }[]
+  enquiryOverview: {
+    label: string
+    count: number
+    percentage: number
+  }[]
+  staffTodayAttendance: {
+    label: string
+    count: number
+    percentage: number
+  }[]
+  studentTodayAttendance: {
+    label: string
+    count: number
+    percentage: number
+  }[]
 }
 
 export interface Course {

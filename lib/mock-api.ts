@@ -1,10 +1,16 @@
-import type { User, Student } from "./types"
-import { mockStudents, mockInstructors, mockAdmins, mockParents } from "./mock-data/users"
+import type { User, Student, SuperAdminDashboardData } from "./types"
+import { mockStudents, mockInstructors, mockAdmins, mockParents, mockSuperAdmins } from "./mock-data/users"
 import { mockCourses, mockClasses } from "./mock-data/courses"
 import { mockAttendance } from "./mock-data/attendance"
 import { mockGrades } from "./mock-data/grades"
 import { mockPayments } from "./mock-data/payments"
 import { mockEnrollments } from "./mock-data/enrollments"
+import {
+  mockSuperAdminDashboard,
+  mockFrontOfficeData,
+  mockFeeCollectionData,
+  mockMultiBranchData,
+} from "./mock-data/superadmin"
 
 // Simulate API delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -15,7 +21,7 @@ export const mockAuthApi = {
     await delay(500)
 
     // Find user across all user types
-    const allUsers = [...mockStudents, ...mockInstructors, ...mockAdmins, ...mockParents]
+    const allUsers = [...mockStudents, ...mockInstructors, ...mockAdmins, ...mockParents, ...mockSuperAdmins]
     const user = allUsers.find((u) => u.email === email)
 
     if (user && password === "password123") {
@@ -252,3 +258,135 @@ export const mockParentApi = {
     }
   },
 }
+
+// SuperAdmin APIs
+export const mockSuperAdminApi = {
+  getDashboardOverview: async (): Promise<SuperAdminDashboardData> => {
+    await delay(300)
+    return mockSuperAdminDashboard
+  },
+
+  exportReport: async (): Promise<{ success: boolean; downloadUrl: string }> => {
+    await delay(500)
+    return {
+      success: true,
+      downloadUrl: "#export-report-aug-2026",
+    }
+  },
+
+  // Module endpoints for future UI integration
+  getFrontOffice: async () => {
+    await delay(300)
+    return mockFrontOfficeData
+  },
+
+  getStudentInfo: async () => {
+    await delay(300)
+    return {
+      students: mockStudents,
+      summary: mockSuperAdminDashboard.stats.students,
+    }
+  },
+
+  getFeeCollection: async () => {
+    await delay(300)
+    return {
+      ...mockFeeCollectionData,
+      stats: mockSuperAdminDashboard.stats.fees,
+      debt: mockSuperAdminDashboard.stats.debt,
+    }
+  },
+
+  getOnlineCourses: async () => {
+    await delay(300)
+    return {
+      courses: mockCourses,
+    }
+  },
+
+  getMultiBranch: async () => {
+    await delay(300)
+    return mockMultiBranchData
+  },
+
+  getLiveClasses: async (platform: "zoom" | "gmeet") => {
+    await delay(300)
+    return {
+      platform,
+      classes: mockClasses,
+    }
+  },
+
+  getIncome: async () => {
+    await delay(300)
+    return {
+      totalIncome: 350000,
+      currency: "₹",
+      records: [],
+    }
+  },
+
+  getExpenses: async () => {
+    await delay(300)
+    return {
+      totalExpenses: 78000,
+      currency: "₹",
+      records: [],
+    }
+  },
+
+  getExamination: async () => {
+    await delay(300)
+    return {
+      exams: [],
+    }
+  },
+
+  getAttendance: async () => {
+    await delay(300)
+    return {
+      staffAttendance: mockSuperAdminDashboard.staffTodayAttendance,
+      studentAttendance: mockSuperAdminDashboard.studentTodayAttendance,
+      stats: {
+        staffPresent: mockSuperAdminDashboard.metrics.staffPresentToday,
+        studentPresent: mockSuperAdminDashboard.metrics.studentPresentToday,
+      },
+    }
+  },
+
+  getAcademics: async () => {
+    await delay(300)
+    return {
+      classes: [],
+      sections: [],
+      subjects: [],
+    }
+  },
+
+  getLessonPlan: async () => {
+    await delay(300)
+    return {
+      plans: [],
+    }
+  },
+
+  getHumanResource: async () => {
+    await delay(300)
+    return {
+      staff: mockInstructors,
+      stats: {
+        tutors: mockSuperAdminDashboard.stats.tutors,
+        staffLeave: mockSuperAdminDashboard.metrics.staffApprovedLeave,
+      },
+    }
+  },
+
+  getCommunication: async () => {
+    await delay(300)
+    return {
+      notices: [],
+      announcements: [],
+    }
+  },
+}
+

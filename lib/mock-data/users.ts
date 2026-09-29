@@ -1,4 +1,4 @@
-import type { Student, Instructor, Admin, Parent } from "../types"
+import type { Student, Instructor, Admin, Parent, SuperAdmin } from "../types"
 
 // Mock Students
 export const mockStudents: Student[] = [
@@ -94,3 +94,20 @@ export const mockParents: Parent[] = [
     createdAt: "2024-01-15T10:00:00Z",
   },
 ]
+
+// Mock SuperAdmins
+export const mockSuperAdmins: SuperAdmin[] = [
+  {
+    id: "SUP001",
+    email: "superadmin@webdeves.com",
+    firstName: "Super",
+    lastName: "Admin",
+    role: "superadmin",
+    adminId: "WDA-SUP-001",
+    permissions: ["all"],
+    avatar: "/placeholder.svg?height=40&width=40",
+    phone: "+234-801-000-0001",
+    createdAt: "2024-01-01T10:00:00Z",
+  },
+]
+

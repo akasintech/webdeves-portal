@@ -11,7 +11,7 @@ import { LayoutDashboard, CreditCard, Users, GraduationCap, Settings } from "luc
 
 interface MobileHeaderProps {
   user: User
-  role: "student" | "instructor" | "admin" | "parent"
+  role: "student" | "instructor" | "admin" | "parent" | "superadmin"
 }
 
 export function MobileHeader({ user, role }: MobileHeaderProps) {
@@ -20,6 +20,25 @@ export function MobileHeader({ user, role }: MobileHeaderProps) {
 
   const getNavItems = () => {
     switch (role) {
+      case "superadmin":
+        return [
+          { href: "/superadmin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+          { href: "/superadmin/front-office", icon: Users, label: "Front Office" },
+          { href: "/superadmin/student-info", icon: GraduationCap, label: "Student Info" },
+          { href: "/superadmin/fee-collection", icon: CreditCard, label: "Fee Collection" },
+          { href: "/superadmin/online-course", icon: LayoutDashboard, label: "Online Course" },
+          { href: "/superadmin/multi-branch", icon: Users, label: "Multi Branch" },
+          { href: "/superadmin/gmeet-live-class", icon: LayoutDashboard, label: "GMeet Live Class" },
+          { href: "/superadmin/zoom-live-class", icon: LayoutDashboard, label: "Zoom Live Class" },
+          { href: "/superadmin/income", icon: CreditCard, label: "Income" },
+          { href: "/superadmin/expenses", icon: CreditCard, label: "Expenses" },
+          { href: "/superadmin/examination", icon: GraduationCap, label: "Examination" },
+          { href: "/superadmin/attendance", icon: Users, label: "Attendance" },
+          { href: "/superadmin/academics", icon: GraduationCap, label: "Academics" },
+          { href: "/superadmin/lesson-plan", icon: LayoutDashboard, label: "Lesson Plan" },
+          { href: "/superadmin/human-resource", icon: Users, label: "Human Resource" },
+          { href: "/superadmin/communication", icon: Users, label: "Communication" },
+        ]
       case "student":
         return [
           { href: "/student/dashboard", icon: LayoutDashboard, label: "Dashboard" },
