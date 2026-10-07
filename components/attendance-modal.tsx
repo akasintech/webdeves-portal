@@ -34,13 +34,13 @@ const calendarDays = [
   { date: 18, status: "No Attendance" },
   { date: 19, status: "No Attendance" },
   // Fourth row
-  { date: 20, status: null },
-  { date: 21, status: null },
-  { date: 22, status: null },
-  { date: 23, status: null },
-  { date: 24, status: null },
-  { date: 25, status: null },
-  { date: 26, status: null },
+  { date: 20, status: "Present" },
+  { date: 21, status: "Present" },
+  { date: 22, status: "Present" },
+  { date: 23, status: "Absent" },
+  { date: 24, status: "No Attendance" },
+  { date: 25, status: "Present" },
+  { date: 26, status: "No Attendance" },
 ]
 
 const statusStyles: Record<string, string> = {

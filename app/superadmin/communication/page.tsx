@@ -1,11 +1,5 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function CommunicationPage() {
-  return (
-    <SuperAdminBlankPage
-      title="Communication"
-      description="Send SMS notices, mass broadcast emails, and manage the campus notice board."
-      moduleKey="communication"
-    />
-  )
+export default function CommunicationRootPage() {
+  redirect("/superadmin/communication/notice-board")
 }

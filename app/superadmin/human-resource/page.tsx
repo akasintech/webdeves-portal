@@ -1,11 +1,5 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function HumanResourcePage() {
-  return (
-    <SuperAdminBlankPage
-      title="Human Resource"
-      description="Manage staff directory, payroll processing, leave allowances, and designations."
-      moduleKey="human-resource"
-    />
-  )
+export default function HumanResourceRootPage() {
+  redirect("/superadmin/human-resource/staff-directory")
 }

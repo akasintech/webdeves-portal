@@ -1,11 +1,6 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function FeeCollectionPage() {
-  return (
-    <SuperAdminBlankPage
-      title="Fee Collection"
-      description="Manage tuition collections, search fee payments, discounts, and overdue balances."
-      moduleKey="fee-collection"
-    />
-  )
+export default function Page() {
+  redirect("/superadmin/fee-collection/collect-fee")
 }
+

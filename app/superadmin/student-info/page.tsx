@@ -1,11 +1,6 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function StudentInfoPage() {
-  return (
-    <SuperAdminBlankPage
-      title="Student Info"
-      description="View student profiles, admission directory, enrollment status, and records."
-      moduleKey="student-info"
-    />
-  )
+export default function Page() {
+  redirect("/superadmin/student-info/student-details")
 }
+

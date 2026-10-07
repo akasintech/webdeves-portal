@@ -1,11 +1,5 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function ExpensesPage() {
-  return (
-    <SuperAdminBlankPage
-      title="Expenses"
-      description="Record institution operational expenses, invoices, payroll deductions, and vendor payments."
-      moduleKey="expenses"
-    />
-  )
+export default function ExpensesRootPage() {
+  redirect("/superadmin/expenses/overview")
 }

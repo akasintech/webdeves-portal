@@ -23,9 +23,9 @@ export function MobileHeader({ user, role }: MobileHeaderProps) {
       case "superadmin":
         return [
           { href: "/superadmin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-          { href: "/superadmin/front-office", icon: Users, label: "Front Office" },
-          { href: "/superadmin/student-info", icon: GraduationCap, label: "Student Info" },
-          { href: "/superadmin/fee-collection", icon: CreditCard, label: "Fee Collection" },
+          { href: "/superadmin/front-office/admission-enquiry", icon: Users, label: "Front Office" },
+          { href: "/superadmin/student-info/student-details", icon: GraduationCap, label: "Student Info" },
+          { href: "/superadmin/fee-collection/collect-fee", icon: CreditCard, label: "Fee Collection" },
           { href: "/superadmin/online-course", icon: LayoutDashboard, label: "Online Course" },
           { href: "/superadmin/multi-branch", icon: Users, label: "Multi Branch" },
           { href: "/superadmin/gmeet-live-class", icon: LayoutDashboard, label: "GMeet Live Class" },

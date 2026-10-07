@@ -1,11 +1,5 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function AttendancePage() {
-  return (
-    <SuperAdminBlankPage
-      title="Attendance"
-      description="Monitor student and staff daily attendance, approve leave requests, and audit attendance logs."
-      moduleKey="attendance"
-    />
-  )
+export default function AttendanceRootPage() {
+  redirect("/superadmin/attendance/student-attendance")
 }

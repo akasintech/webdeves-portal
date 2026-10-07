@@ -1,11 +1,5 @@
-import { SuperAdminBlankPage } from "@/components/superadmin-blank-page"
+import { redirect } from "next/navigation"
 
-export default function LessonPlanPage() {
-  return (
-    <SuperAdminBlankPage
-      title="Lesson Plan"
-      description="Supervise curriculum delivery, lesson plans, topic completion, and syllabus tracking."
-      moduleKey="lesson-plan"
-    />
-  )
+export default function LessonPlanRootPage() {
+  redirect("/superadmin/lesson-plan/manage-lesson-plan")
 }
