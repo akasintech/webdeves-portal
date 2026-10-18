@@ -36,7 +36,11 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
   return (
     <div className="min-h-screen bg-gray-50/60">
       <SidebarNav user={user} role="student" />
-      <MobileHeader user={user} role="student" />
+      <MobileHeader
+        user={user}
+        role="student"
+        onAttendanceClick={() => setIsAttendanceOpen(true)}
+      />
 
       <div className="lg:pl-64">
         {/* Desktop Topbar */}

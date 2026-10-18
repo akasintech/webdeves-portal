@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { authUtils } from "@/lib/auth"
 import type { Parent } from "@/lib/types"
 import { SidebarNav } from "@/components/sidebar-nav"
+import { MobileHeader } from "@/components/mobile-header"
 import { Bell } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
@@ -34,9 +35,10 @@ export default function ParentLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-gray-50">
       <SidebarNav user={user} role="parent" />
+      <MobileHeader user={user} role="parent" />
 
       <div className="lg:pl-64">
-        <header className="flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200">
+        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-gray-200">
           <h1 className="text-2xl font-semibold">Dashboard</h1>
           <div className="flex items-center gap-4">
             <button className="relative text-gray-700 hover:text-gray-900">

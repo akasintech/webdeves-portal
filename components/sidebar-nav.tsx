@@ -28,16 +28,16 @@ import {
   BookMarked,
   MessageSquare,
 } from "lucide-react"
-import type { User } from "@/lib/types"
+import type { User, UserRole } from "@/lib/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 
 interface SidebarNavProps {
   user: User
   role: "student" | "instructor" | "admin" | "parent" | "superadmin"
 }
 
-interface NavItem {
+export interface NavItem {
   href?: string
   icon: React.ElementType
   label: string
@@ -45,159 +45,155 @@ interface NavItem {
   hasChevron?: boolean
 }
 
-export function SidebarNav({ user, role }: SidebarNavProps) {
-  const pathname = usePathname()
-  const [openGroup, setOpenGroup] = useState<string | null>("exams")
-
-  const getNavItems = (): NavItem[] => {
-    switch (role) {
-      case "superadmin":
-        return [
-          { href: "/superadmin/dashboard", icon: LayoutGrid, label: "Dashboard" },
-          {
-            icon: Building2,
-            label: "Front Office",
-            children: [
-              { href: "/superadmin/front-office/admission-enquiry", label: "Admission Enquiry" },
-              { href: "/superadmin/front-office/visitors-book", label: "Visitors Book" },
-              { href: "/superadmin/front-office/complaint", label: "Complaint" },
-            ],
-          },
-          {
-            icon: GraduationCap,
-            label: "Student Info",
-            children: [
-              { href: "/superadmin/student-info/student-details", label: "Student Details" },
-              { href: "/superadmin/student-info/student-admission", label: "Student Admission" },
-              { href: "/superadmin/student-info/online-admission", label: "Online Admission" },
-              { href: "/superadmin/student-info/multi-class-students", label: "Multi-Class Students" },
-              { href: "/superadmin/student-info/bulk-delete", label: "Bulk Delete" },
-              { href: "/superadmin/student-info/student-category", label: "Student Category" },
-            ],
-          },
-          {
-            icon: CreditCard,
-            label: "Fee Collection",
-            children: [
-              { href: "/superadmin/fee-collection/collect-fee", label: "Collect Fee" },
-              { href: "/superadmin/fee-collection/offline-bank-payments", label: "Offline Bank Payments" },
-              { href: "/superadmin/fee-collection/fee-group", label: "Fee Group" },
-              { href: "/superadmin/fee-collection/fee-type", label: "Fee Type" },
-              { href: "/superadmin/fee-collection/fee-reminder", label: "Fee Reminder" },
-            ],
-          },
-          {
-            icon: Laptop,
-            label: "Online Course",
-            children: [
-              { href: "/superadmin/online-course/courses", label: "Online Courses" },
-              { href: "/superadmin/online-course/course-category", label: "Course Category" },
-              { href: "/superadmin/online-course/certificate-template", label: "Certificate Template" },
-              { href: "/superadmin/online-course/report", label: "Online Course Report" },
-              { href: "/superadmin/online-course/settings", label: "Online Course Settings" },
-            ],
-          },
-          {
-            icon: GitFork,
-            label: "Multi Branch",
-            children: [
-              { href: "/superadmin/multi-branch/overview", label: "Overview" },
-              { href: "/superadmin/multi-branch/report", label: "Report" },
-              { href: "/superadmin/multi-branch/settings", label: "Settings" },
-            ],
-          },
-          { href: "/superadmin/gmeet-live-class", icon: Video, label: "GMeet Live Class" },
-          { href: "/superadmin/zoom-live-class", icon: Video, label: "Zoom Live Class" },
-          { href: "/superadmin/income", icon: TrendingUp, label: "Income" },
-          {
-            icon: TrendingDown,
-            label: "Expenses",
-            children: [
-              { href: "/superadmin/expenses/overview", label: "Overview" },
-              { href: "/superadmin/expenses/add-expense", label: "Add Expense" },
-              { href: "/superadmin/expenses/expense-head", label: "Expense Head" },
-            ],
-          },
-          {
-            icon: ClipboardList,
-            label: "Examination",
-            children: [
-              { href: "/superadmin/examination/exam-group", label: "Exam Group" },
-              { href: "/superadmin/examination/exam-schedule", label: "Exam Schedule" },
-              { href: "/superadmin/examination/exam-result", label: "Exam Result" },
-              { href: "/superadmin/examination/design-admit-card", label: "Design Admit Card" },
-              { href: "/superadmin/examination/print-admit-card", label: "Print Admit Card" },
-              { href: "/superadmin/examination/design-marksheet", label: "Design Marksheet" },
-              { href: "/superadmin/examination/print-marksheet", label: "Print Marksheet" },
-              { href: "/superadmin/examination/marks-grade", label: "Marks Grade" },
-              { href: "/superadmin/examination/marks-division", label: "Marks Division" },
-            ],
-          },
-          {
-            icon: CalendarCheck,
-            label: "Attendance",
-            children: [
-              { href: "/superadmin/attendance/student-attendance", label: "Student Attendance" },
-              { href: "/superadmin/attendance/approve-leave", label: "Approve Leave" },
-              { href: "/superadmin/attendance/attendance-by-date", label: "Attendance By Date" },
-            ],
-          },
-          {
-            icon: BookOpen,
-            label: "Academics",
-            children: [
-              { href: "/superadmin/academics/class-timetable", label: "Class Timetable" },
-              { href: "/superadmin/academics/teachers-timetable", label: "Teachers Timetable" },
-              { href: "/superadmin/academics/assign-class-teacher", label: "Assign Class Teacher" },
-              { href: "/superadmin/academics/promote-students", label: "Promote Students" },
-              { href: "/superadmin/academics/subject-group", label: "Subject Group" },
-              { href: "/superadmin/academics/subjects", label: "Subjects" },
-              { href: "/superadmin/academics/class", label: "Class" },
-              { href: "/superadmin/academics/sections", label: "Sections" },
-            ],
-          },
-          {
-            icon: BookMarked,
-            label: "Lesson Plan",
-            children: [
-              { href: "/superadmin/lesson-plan/copy-old-lessons", label: "Copy Old Lessons" },
-              { href: "/superadmin/lesson-plan/manage-lesson-plan", label: "Manage Lesson Plan" },
-              { href: "/superadmin/lesson-plan/manage-syllabus-status", label: "Manage Syllabus Status" },
-              { href: "/superadmin/lesson-plan/lesson", label: "Lesson" },
-              { href: "/superadmin/lesson-plan/topic", label: "Topic" },
-            ],
-          },
-          {
-            icon: Users,
-            label: "Human Resource",
-            children: [
-              { href: "/superadmin/human-resource/staff-directory", label: "Staff Directory" },
-              { href: "/superadmin/human-resource/staff-attendance", label: "Staff Attendance" },
-              { href: "/superadmin/human-resource/payroll", label: "Payroll" },
-              { href: "/superadmin/human-resource/approve-leave-request", label: "Approve Leave Request" },
-              { href: "/superadmin/human-resource/apply-leave", label: "Apply Leave" },
-              { href: "/superadmin/human-resource/leave-type", label: "Leave Type" },
-              { href: "/superadmin/human-resource/teachers-rating", label: "Teachers Rating" },
-              { href: "/superadmin/human-resource/department", label: "Department" },
-              { href: "/superadmin/human-resource/designation", label: "Designation" },
-              { href: "/superadmin/human-resource/disabled-staff", label: "Disabled Staff" },
-            ],
-          },
-          {
-            icon: MessageSquare,
-            label: "Communication",
-            children: [
-              { href: "/superadmin/communication/notice-board", label: "Notice Board" },
-              { href: "/superadmin/communication/send-email", label: "Send Email" },
-              { href: "/superadmin/communication/send-sms", label: "Send SMS" },
-              { href: "/superadmin/communication/email-sms-log", label: "Email / SMS Log" },
-              { href: "/superadmin/communication/schedule-email-sms-log", label: "Schedule Email SMS Log" },
-              { href: "/superadmin/communication/login-credentials-send", label: "Login Credentials Send" },
-              { href: "/superadmin/communication/email-template", label: "Email Template" },
-              { href: "/superadmin/communication/sms-template", label: "SMS Template" },
-            ],
-          },
-        ]
+export function getNavItems(role: UserRole | string): NavItem[] {
+  switch (role) {
+    case "superadmin":
+      return [
+        { href: "/superadmin/dashboard", icon: LayoutGrid, label: "Dashboard" },
+        {
+          icon: Building2,
+          label: "Front Office",
+          children: [
+            { href: "/superadmin/front-office/admission-enquiry", label: "Admission Enquiry" },
+            { href: "/superadmin/front-office/visitors-book", label: "Visitors Book" },
+            { href: "/superadmin/front-office/complaint", label: "Complaint" },
+          ],
+        },
+        {
+          icon: GraduationCap,
+          label: "Student Info",
+          children: [
+            { href: "/superadmin/student-info/student-details", label: "Student Details" },
+            { href: "/superadmin/student-info/student-admission", label: "Student Admission" },
+            { href: "/superadmin/student-info/online-admission", label: "Online Admission" },
+            { href: "/superadmin/student-info/multi-class-students", label: "Multi-Class Students" },
+            { href: "/superadmin/student-info/bulk-delete", label: "Bulk Delete" },
+            { href: "/superadmin/student-info/student-category", label: "Student Category" },
+          ],
+        },
+        {
+          icon: CreditCard,
+          label: "Fee Collection",
+          children: [
+            { href: "/superadmin/fee-collection/collect-fee", label: "Collect Fee" },
+            { href: "/superadmin/fee-collection/offline-bank-payments", label: "Offline Bank Payments" },
+            { href: "/superadmin/fee-collection/fee-group", label: "Fee Group" },
+            { href: "/superadmin/fee-collection/fee-type", label: "Fee Type" },
+            { href: "/superadmin/fee-collection/fee-reminder", label: "Fee Reminder" },
+          ],
+        },
+        {
+          icon: Laptop,
+          label: "Online Course",
+          children: [
+            { href: "/superadmin/online-course/courses", label: "Online Courses" },
+            { href: "/superadmin/online-course/course-category", label: "Course Category" },
+            { href: "/superadmin/online-course/certificate-template", label: "Certificate Template" },
+            { href: "/superadmin/online-course/report", label: "Online Course Report" },
+            { href: "/superadmin/online-course/settings", label: "Online Course Settings" },
+          ],
+        },
+        {
+          icon: GitFork,
+          label: "Multi Branch",
+          children: [
+            { href: "/superadmin/multi-branch/overview", label: "Overview" },
+            { href: "/superadmin/multi-branch/report", label: "Report" },
+            { href: "/superadmin/multi-branch/settings", label: "Settings" },
+          ],
+        },
+        { href: "/superadmin/gmeet-live-class", icon: Video, label: "GMeet Live Class" },
+        { href: "/superadmin/zoom-live-class", icon: Video, label: "Zoom Live Class" },
+        { href: "/superadmin/income", icon: TrendingUp, label: "Income" },
+        {
+          icon: TrendingDown,
+          label: "Expenses",
+          children: [
+            { href: "/superadmin/expenses/overview", label: "Overview" },
+            { href: "/superadmin/expenses/add-expense", label: "Add Expense" },
+            { href: "/superadmin/expenses/expense-head", label: "Expense Head" },
+          ],
+        },
+        {
+          icon: ClipboardList,
+          label: "Examination",
+          children: [
+            { href: "/superadmin/examination/exam-group", label: "Exam Group" },
+            { href: "/superadmin/examination/exam-schedule", label: "Exam Schedule" },
+            { href: "/superadmin/examination/exam-result", label: "Exam Result" },
+            { href: "/superadmin/examination/design-admit-card", label: "Design Admit Card" },
+            { href: "/superadmin/examination/print-admit-card", label: "Print Admit Card" },
+            { href: "/superadmin/examination/design-marksheet", label: "Design Marksheet" },
+            { href: "/superadmin/examination/print-marksheet", label: "Print Marksheet" },
+            { href: "/superadmin/examination/marks-grade", label: "Marks Grade" },
+            { href: "/superadmin/examination/marks-division", label: "Marks Division" },
+          ],
+        },
+        {
+          icon: CalendarCheck,
+          label: "Attendance",
+          children: [
+            { href: "/superadmin/attendance/student-attendance", label: "Student Attendance" },
+            { href: "/superadmin/attendance/approve-leave", label: "Approve Leave" },
+            { href: "/superadmin/attendance/attendance-by-date", label: "Attendance By Date" },
+          ],
+        },
+        {
+          icon: BookOpen,
+          label: "Academics",
+          children: [
+            { href: "/superadmin/academics/class-timetable", label: "Class Timetable" },
+            { href: "/superadmin/academics/teachers-timetable", label: "Teachers Timetable" },
+            { href: "/superadmin/academics/assign-class-teacher", label: "Assign Class Teacher" },
+            { href: "/superadmin/academics/promote-students", label: "Promote Students" },
+            { href: "/superadmin/academics/subject-group", label: "Subject Group" },
+            { href: "/superadmin/academics/subjects", label: "Subjects" },
+            { href: "/superadmin/academics/class", label: "Class" },
+            { href: "/superadmin/academics/sections", label: "Sections" },
+          ],
+        },
+        {
+          icon: BookMarked,
+          label: "Lesson Plan",
+          children: [
+            { href: "/superadmin/lesson-plan/copy-old-lessons", label: "Copy Old Lessons" },
+            { href: "/superadmin/lesson-plan/manage-lesson-plan", label: "Manage Lesson Plan" },
+            { href: "/superadmin/lesson-plan/manage-syllabus-status", label: "Manage Syllabus Status" },
+            { href: "/superadmin/lesson-plan/lesson", label: "Lesson" },
+            { href: "/superadmin/lesson-plan/topic", label: "Topic" },
+          ],
+        },
+        {
+          icon: Users,
+          label: "Human Resource",
+          children: [
+            { href: "/superadmin/human-resource/staff-directory", label: "Staff Directory" },
+            { href: "/superadmin/human-resource/staff-attendance", label: "Staff Attendance" },
+            { href: "/superadmin/human-resource/payroll", label: "Payroll" },
+            { href: "/superadmin/human-resource/approve-leave-request", label: "Approve Leave Request" },
+            { href: "/superadmin/human-resource/apply-leave", label: "Apply Leave" },
+            { href: "/superadmin/human-resource/leave-type", label: "Leave Type" },
+            { href: "/superadmin/human-resource/teachers-rating", label: "Teachers Rating" },
+            { href: "/superadmin/human-resource/department", label: "Department" },
+            { href: "/superadmin/human-resource/designation", label: "Designation" },
+            { href: "/superadmin/human-resource/disabled-staff", label: "Disabled Staff" },
+          ],
+        },
+        {
+          icon: MessageSquare,
+          label: "Communication",
+          children: [
+            { href: "/superadmin/communication/notice-board", label: "Notice Board" },
+            { href: "/superadmin/communication/send-email", label: "Send Email" },
+            { href: "/superadmin/communication/send-sms", label: "Send SMS" },
+            { href: "/superadmin/communication/email-sms-log", label: "Email / SMS Log" },
+            { href: "/superadmin/communication/schedule-email-sms-log", label: "Schedule Email SMS Log" },
+            { href: "/superadmin/communication/login-credentials-send", label: "Login Credentials Send" },
+            { href: "/superadmin/communication/email-template", label: "Email Template" },
+            { href: "/superadmin/communication/sms-template", label: "SMS Template" },
+          ],
+        },
+      ]
       case "student":
         return [
           { href: "/student/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -255,10 +251,50 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
     }
   }
 
-  const navItems = getNavItems()
+export function SidebarNav({ user, role }: SidebarNavProps) {
+  const pathname = usePathname()
+  const navItems = useMemo(() => getNavItems(role), [role])
+
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {}
+    navItems.forEach((item) => {
+      if (item.children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"))) {
+        initial[item.label] = true
+      }
+    })
+    return initial
+  })
+
+  useEffect(() => {
+    const toOpen: string[] = []
+    for (const item of navItems) {
+      if (item.children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"))) {
+        toOpen.push(item.label)
+      }
+    }
+
+    if (toOpen.length > 0) {
+      setOpenGroups((prev) => {
+        const needsUpdate = toOpen.some((label) => !prev[label])
+        if (!needsUpdate) return prev
+        const next = { ...prev }
+        for (const label of toOpen) {
+          next[label] = true
+        }
+        return next
+      })
+    }
+  }, [pathname, navItems])
+
+  const toggleGroup = (label: string) => {
+    setOpenGroups((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }))
+  }
 
   const isActiveChild = (children: { href: string }[]) =>
-    children.some((c) => pathname === c.href)
+    children.some((c) => pathname === c.href || pathname.startsWith(c.href + "/"))
 
   return (
     <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-white border-r border-gray-200 z-20">
@@ -276,14 +312,15 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
           {navItems.map((item) => {
             // Group with children
             if (item.children) {
-              const isOpen = openGroup === item.label || isActiveChild(item.children)
+              const isOpen = !!openGroups[item.label]
+              const hasActiveChild = isActiveChild(item.children)
               return (
                 <div key={item.label}>
                   <button
-                    onClick={() => setOpenGroup(isOpen ? null : item.label)}
+                    onClick={() => toggleGroup(item.label)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13.5px] font-medium transition-colors ${
-                      isActiveChild(item.children)
-                        ? role === "superadmin" ? "bg-blue-50 text-blue-600" : "bg-primary/10 text-primary"
+                      hasActiveChild
+                        ? role === "superadmin" ? "bg-blue-50 text-blue-600 font-semibold" : "bg-primary/10 text-primary font-semibold"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`}
                   >
@@ -303,7 +340,7 @@ export function SidebarNav({ user, role }: SidebarNavProps) {
                           href={child.href}
                           className={`block px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${
                             pathname === child.href
-                              ? role === "superadmin" ? "bg-blue-50 text-blue-600" : "bg-primary text-white"
+                              ? role === "superadmin" ? "bg-blue-50 text-blue-600 font-semibold" : "bg-primary text-white"
                               : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                           }`}
                         >

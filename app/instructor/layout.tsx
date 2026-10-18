@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { authUtils } from "@/lib/auth"
 import type { Instructor } from "@/lib/types"
 import { SidebarNav } from "@/components/sidebar-nav"
+import { MobileHeader } from "@/components/mobile-header"
 import { Bell, ClipboardList } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AttendanceModal } from "@/components/attendance-modal"
@@ -35,10 +36,15 @@ export default function InstructorLayout({ children }: { children: React.ReactNo
   return (
     <div className="min-h-screen bg-gray-50/60">
       <SidebarNav user={user} role="instructor" />
+      <MobileHeader
+        user={user}
+        role="instructor"
+        onAttendanceClick={() => setIsAttendanceOpen(true)}
+      />
 
       <div className="lg:pl-64">
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
+        <header className="hidden lg:flex items-center justify-between px-6 py-3 bg-white border-b border-gray-100 sticky top-0 z-10">
           {/* Left: Portal brand */}
           <div>
             <p className="text-[14px] font-bold text-gray-900 leading-tight">Webdeves SMS</p>

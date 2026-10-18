@@ -39,7 +39,11 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <SidebarNav user={user} role="superadmin" />
-      <MobileHeader user={user} role="superadmin" />
+      <MobileHeader
+        user={user}
+        role="superadmin"
+        onAttendanceClick={() => setIsAttendanceOpen(true)}
+      />
 
       <div className="lg:pl-64">
         {/* Top Header */}
